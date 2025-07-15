@@ -35,11 +35,11 @@ export function WelcomeScreen({ onStart }: WelcomeScreenProps) {
           {isLoading ? "LOADING..." : "SEE BEYOND"}
         </button>
 
-        <p className="mt-6 text-xs opacity-70">
-          Use the controls to change patterns, colors, and rotation speed.
-          <br />
-          Drag to rotate the view. Scroll to zoom.
-        </p>
+        <div className="mt-6 text-xs opacity-70">
+          <p>Use the controls to change patterns, colors, and rotation speed.</p>
+          <p className="mt-1">Drag to rotate the view. Scroll to zoom.</p>
+          <p className="mt-3 text-red-400">NEW: Record your experience as an animated GIF!</p>
+        </div>
       </div>
     </div>
   )

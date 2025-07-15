@@ -1,12 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Canvas } from "@react-three/fiber"
 import { OrbitControls } from "@react-three/drei"
 import { GeometricScene } from "./geometric-scene"
 import { WelcomeScreen } from "./welcome-screen"
 import { Controls } from "./controls"
 import { MessageDisplay } from "./message-display"
+import { GifRecorder } from "./gif-recorder"
 import { Fullscreen, Maximize2 } from "lucide-react"
 
 export default function GeometricExperience() {
@@ -16,6 +17,7 @@ export default function GeometricExperience() {
   const [rotationSpeed, setRotationSpeed] = useState(0.2)
   const [showLines, setShowLines] = useState(true)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -35,7 +37,12 @@ export default function GeometricExperience() {
     <div className="relative w-full h-full">
       {!started && <WelcomeScreen onStart={() => setStarted(true)} />}
 
-      <Canvas camera={{ position: [0, 0, 15], fov: 60 }} gl={{ antialias: true, alpha: true }} className="touch-none">
+      <Canvas
+        camera={{ position: [0, 0, 15], fov: 60 }}
+        gl={{ antialias: true, alpha: true, preserveDrawingBuffer: true }} // preserveDrawingBuffer is needed for recording
+        className="touch-none"
+        ref={canvasRef}
+      >
         <color attach="background" args={["#050510"]} />
 
         <OrbitControls
@@ -63,6 +70,8 @@ export default function GeometricExperience() {
 
       {started && (
         <>
+          {canvasRef.current && <GifRecorder targetRef={canvasRef} />}
+
           <Controls
             pattern={pattern}
             setPattern={setPattern}
@@ -73,7 +82,9 @@ export default function GeometricExperience() {
             showLines={showLines}
             setShowLines={setShowLines}
           />
+
           <MessageDisplay pattern={pattern} colorScheme={colorScheme} />
+
           <button
             onClick={toggleFullscreen}
             className="absolute top-4 right-4 z-10 p-3 bg-fuchsia-900 bg-opacity-70 hover:bg-opacity-100 rounded-full text-white transition-colors"
